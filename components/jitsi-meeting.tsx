@@ -208,7 +208,7 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
           <div
             ref={rootRef}
             dir="ltr"
-            className="min-h-[calc(100dvh-10rem)] w-full sm:min-h-[620px] lg:min-h-[720px]"
+            className="h-[calc(100dvh-10rem)] w-full sm:h-[620px] lg:h-[720px]"
           />
         </section>
       </div>
