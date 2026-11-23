@@ -119,13 +119,37 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
           lang: "ar",
           userInfo: body.data.userInfo,
           configOverwrite: {
-            prejoinPageEnabled: false,
+            prejoinConfig: { enabled: false },
             startWithAudioMuted: true,
             startWithVideoMuted: true,
+            toolbarButtons: [
+              "microphone",
+              "camera",
+              "desktop",
+              "fullscreen",
+              "hangup",
+              "chat",
+              "raisehand",
+              "tileview",
+              "settings",
+              "security",
+            ],
           },
           interfaceConfigOverwrite: {
             SHOW_JITSI_WATERMARK: false,
             SHOW_BRAND_WATERMARK: false,
+            TOOLBAR_BUTTONS: [
+              "microphone",
+              "camera",
+              "desktop",
+              "fullscreen",
+              "hangup",
+              "chat",
+              "raisehand",
+              "tileview",
+              "settings",
+              "security",
+            ],
           },
         });
         api.addEventListener("videoConferenceJoined", () => {
