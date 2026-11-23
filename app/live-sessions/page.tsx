@@ -20,18 +20,18 @@ const labels = {
 export default async function LiveSessionsPage() {
   const sessions = await getLiveSessions();
   return (
-    <main className="flex-1 bg-[#f7fbf9] px-5 py-16">
+    <main className="flex-1 bg-[#f7fbf9] px-4 py-10 sm:px-5 sm:py-16">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <span className="rounded-full bg-[#e5f8ef] px-4 py-2 text-sm font-bold text-[#00a875]">
             للباقة البريميوم
           </span>
-          <h1 className="mt-6 text-4xl font-bold text-[#17213d]">
+          <h1 className="mt-6 text-3xl font-bold text-[#17213d] sm:text-4xl">
             الجلسات المباشرة
           </h1>
           <p className="mt-4 text-lg leading-8 text-[#7c8782]">
-            قابل الخبراء مباشرة، اطرح أسئلتك، وطبّق ما تعلمته داخل جلسات
-            منظمة من أكاديمية كفاءات.
+            قابل الخبراء مباشرة، اطرح أسئلتك، وطبّق ما تعلمته داخل جلسات منظمة من
+            أكاديمية كفاءات.
           </p>
         </div>
 
@@ -92,4 +92,3 @@ export default async function LiveSessionsPage() {
     </main>
   );
 }
-

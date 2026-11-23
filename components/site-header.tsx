@@ -4,21 +4,30 @@ import SearchInput from "./search-input";
 import AuthNav from "./auth-nav";
 import { SESSION_COOKIE } from "../lib/session";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function SiteHeader() {
   const signedIn = (await cookies()).has(SESSION_COOKIE);
   return (
     <header className="border-b border-gray-100 bg-white">
-      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-x-5 gap-y-4 px-5 py-5 xl:flex-nowrap xl:px-8">
+      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center gap-x-4 gap-y-4 px-4 py-3 sm:px-5 lg:flex-nowrap lg:px-8">
         <Link
           href="/"
-          className="text-3xl font-bold tracking-tight text-[#06cc8f]"
+          aria-label="أكاديمية كفاءات - الرئيسية"
+          className="order-1 shrink-0"
         >
-          كفاءات
+          <Image
+            src="/kafaat-logo.png"
+            alt="كفاءات"
+            width={1024}
+            height={610}
+            priority
+            className="h-11 w-auto sm:h-12"
+          />
         </Link>
         <nav
           aria-label="التنقل الرئيسي"
-          className="order-last flex w-full flex-wrap items-center gap-x-6 gap-y-3 text-sm font-semibold md:order-none md:w-auto xl:flex-nowrap xl:gap-7"
+          className="order-3 flex w-full flex-wrap justify-center gap-x-4 gap-y-2 border-t border-gray-100 pt-3 text-xs font-semibold sm:gap-x-6 sm:text-sm lg:order-2 lg:w-auto lg:flex-1 lg:flex-nowrap lg:border-0 lg:pt-0"
         >
           <Link href="/#categories">الأقسام</Link>
           <Link href="/#courses">الدورات</Link>
@@ -30,7 +39,7 @@ export default async function SiteHeader() {
           action="/#courses"
           method="get"
           role="search"
-          className="order-last flex w-full shrink-0 overflow-hidden rounded-full border border-gray-300 md:order-none md:w-52 xl:w-60"
+          className="order-4 flex w-full shrink-0 overflow-hidden rounded-full border border-gray-300 sm:w-72 lg:order-3 lg:w-48 xl:w-56"
         >
           <label htmlFor="course-search" className="sr-only">
             ابحث عن دورة أو مجال
@@ -40,16 +49,16 @@ export default async function SiteHeader() {
           </Suspense>
           <button
             type="submit"
-            className="bg-[#06cc8f] px-5 text-sm font-bold text-white transition hover:bg-[#00b980]"
+            className="bg-[#06cc8f] px-4 text-sm font-bold text-white transition hover:bg-[#00b980]"
           >
             ابحث
           </button>
         </form>
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="order-2 mr-auto flex shrink-0 items-center gap-1 sm:gap-3 lg:order-4">
           <AuthNav signedIn={signedIn} />
           <Link
             href="/#courses"
-            className="hidden rounded-full border border-gray-300 px-6 py-3 text-sm font-bold sm:inline-flex"
+            className="hidden rounded-full border border-gray-300 px-5 py-3 text-sm font-bold 2xl:inline-flex"
           >
             تصفح الدورات
           </Link>

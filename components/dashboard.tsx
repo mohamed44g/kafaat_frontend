@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import {
   formatDuration,
   type Category,
@@ -359,10 +360,22 @@ function Overview({
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         <section className={`${panel} p-6`}>
           <h2 className="font-bold">حالة الاشتراكات</h2>
-          <p className="mt-1 text-xs text-[#9aa49e]">أرقام مباشرة من الحسابات المسجلة.</p>
+          <p className="mt-1 text-xs text-[#9aa49e]">
+            أرقام مباشرة من الحسابات المسجلة.
+          </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl bg-[#e8f9f0] p-5"><p className="text-sm text-[#62756b]">اشتراكات نشطة</p><p className="mt-2 text-3xl font-bold text-[#0a9d70]">{users.filter((user) => user.isSubscribed).length}</p></div>
-            <div className="rounded-xl bg-[#f7faf8] p-5"><p className="text-sm text-[#62756b]">بدون اشتراك نشط</p><p className="mt-2 text-3xl font-bold text-[#20263a]">{users.filter((user) => !user.isSubscribed).length}</p></div>
+            <div className="rounded-xl bg-[#e8f9f0] p-5">
+              <p className="text-sm text-[#62756b]">اشتراكات نشطة</p>
+              <p className="mt-2 text-3xl font-bold text-[#0a9d70]">
+                {users.filter((user) => user.isSubscribed).length}
+              </p>
+            </div>
+            <div className="rounded-xl bg-[#f7faf8] p-5">
+              <p className="text-sm text-[#62756b]">بدون اشتراك نشط</p>
+              <p className="mt-2 text-3xl font-bold text-[#20263a]">
+                {users.filter((user) => !user.isSubscribed).length}
+              </p>
+            </div>
           </div>
         </section>
         <section className={`${panel} p-6`}>
@@ -431,8 +444,15 @@ function Overview({
         </section>
         <section className={`${panel} p-6`}>
           <h2 className="font-bold">محتوى المنصة</h2>
-          <p className="mt-1 text-xs text-[#9aa49e]">أضف الأقسام، المدربين والدورات من تبويبات إدارة المحتوى.</p>
-          <button onClick={() => go("courses")} className="mt-5 rounded-xl bg-[#06cc8f] px-4 py-2.5 text-sm font-bold text-white">إدارة الدورات</button>
+          <p className="mt-1 text-xs text-[#9aa49e]">
+            أضف الأقسام، المدربين والدورات من تبويبات إدارة المحتوى.
+          </p>
+          <button
+            onClick={() => go("courses")}
+            className="mt-5 rounded-xl bg-[#06cc8f] px-4 py-2.5 text-sm font-bold text-white"
+          >
+            إدارة الدورات
+          </button>
         </section>
       </div>
     </>
@@ -460,14 +480,18 @@ export default function Dashboard(props: DashboardProps) {
   return (
     <main className="flex-1 bg-[#f5f8f6]">
       <div className="flex w-full flex-col lg:min-h-[800px] lg:flex-row">
-        <aside className="w-full shrink-0 border-b border-[#e7eeea] bg-white p-5 lg:w-60 lg:border-b-0 lg:border-l lg:px-4 lg:py-7">
-          <div className="mb-7 px-3">
-            <p className="text-xl font-bold text-[#06bf88]">
-              كفاءات{" "}
-              <span className="text-xs font-medium text-[#9ba69f]">
-                / الإدارة
-              </span>
-            </p>
+        <aside className="w-full shrink-0 border-b border-[#e7eeea] bg-white p-4 sm:p-5 lg:w-60 lg:border-b-0 lg:border-l lg:px-4 lg:py-7">
+          <div className="mb-5 flex items-center gap-2 px-3 lg:mb-7">
+            <Image
+              src="/kafaat-logo.png"
+              alt="كفاءات"
+              width={1024}
+              height={610}
+              className="h-10 w-auto"
+            />
+            <span className="text-xs font-medium text-[#9ba69f]">
+              / الإدارة
+            </span>
           </div>
           <nav
             aria-label="أقسام لوحة الإدارة"
@@ -496,7 +520,7 @@ export default function Dashboard(props: DashboardProps) {
             ))}
           </nav>
         </aside>
-        <div className="min-w-0 flex-1 px-5 py-8 sm:px-8 lg:px-10">
+        <div className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 lg:px-10">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-xs text-[#9aa49e]">لوحة الإدارة / {label}</p>
@@ -520,11 +544,7 @@ export default function Dashboard(props: DashboardProps) {
             </div>
           </div>
           {section === "overview" ? (
-            <Overview
-              go={navigate}
-              courses={courses}
-              users={users}
-            />
+            <Overview go={navigate} courses={courses} users={users} />
           ) : section === "plans" ? (
             <section className={`${panel} overflow-hidden`}>
               <div className="p-6">
@@ -550,19 +570,26 @@ export default function Dashboard(props: DashboardProps) {
               <div className="p-6">
                 <h2 className="font-bold">إدارة الجلسات المباشرة</h2>
                 <p className="mt-1 text-xs text-[#9aa49e]">
-                  أنشئ المواعيد وعدّلها وابدأ الاجتماع كمضيف. الدخول للطلاب متاح للباقة البريميوم فقط.
+                  أنشئ المواعيد وعدّلها وابدأ الاجتماع كمضيف. الدخول للطلاب متاح
+                  للباقة البريميوم فقط.
                 </p>
               </div>
               <LiveSessionManagement initialSessions={props.liveSessions} />
             </section>
-          ) : ["courses", "categories", "instructors", "videos"].includes(section) ? (
+          ) : ["courses", "categories", "instructors", "videos"].includes(
+              section,
+            ) ? (
             <section className={`${panel} overflow-hidden`}>
               <div className="p-6">
                 <h2 className="font-bold">{label}</h2>
-                <p className="mt-1 text-xs text-[#9aa49e]">كل التعديلات تُحفظ في قاعدة البيانات مباشرة.</p>
+                <p className="mt-1 text-xs text-[#9aa49e]">
+                  كل التعديلات تُحفظ في قاعدة البيانات مباشرة.
+                </p>
               </div>
               <ContentCrud
-                resource={section as "courses" | "categories" | "instructors" | "videos"}
+                resource={
+                  section as "courses" | "categories" | "instructors" | "videos"
+                }
                 courses={props.courses}
                 categories={props.categories}
                 instructors={props.instructors}
@@ -589,7 +616,10 @@ export default function Dashboard(props: DashboardProps) {
                 />
               </div>
               {section === "subscriptions" && (
-                <SubscriptionAssignment users={props.users} plans={props.plans} />
+                <SubscriptionAssignment
+                  users={props.users}
+                  plans={props.plans}
+                />
               )}
               {filtered.length ? (
                 <Table columns={current.columns} data={filtered} />

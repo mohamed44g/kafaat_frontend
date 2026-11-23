@@ -36,7 +36,7 @@ export default async function SubscribePage({
     getBankTransferSettings().catch(() => unavailable),
   ]);
   return (
-    <main className="flex-1 bg-[#f8fcf9] px-5 py-10 sm:py-14">
+    <main className="flex-1 bg-[#f8fcf9] px-4 py-8 sm:px-5 sm:py-14">
       <div className="mx-auto max-w-6xl">
         <nav className="mb-6 text-sm text-[#838894]">
           <Link href="/" className="font-semibold text-[#06ad7a]">
@@ -46,11 +46,12 @@ export default async function SubscribePage({
           الاشتراك
         </nav>
         <div className="mb-9 text-center">
-          <h1 className="text-3xl font-bold text-[#21213f]">
+          <h1 className="text-2xl font-bold text-[#21213f] sm:text-3xl">
             اشترك عن طريق التحويل البنكي
           </h1>
           <p className="mt-3 text-sm leading-7 text-[#838894]">
-            اختر الباقة، حوّل القيمة، ثم أرسل صورة الإيصال إلى الدعم لتفعيل اشتراكك.
+            اختر الباقة، حوّل القيمة، ثم أرسل صورة الإيصال إلى الدعم لتفعيل
+            اشتراكك.
           </p>
         </div>
         <BankTransferSubscribe

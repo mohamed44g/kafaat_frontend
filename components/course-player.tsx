@@ -15,7 +15,7 @@ export default function CoursePlayer({
   const current = lessons[selected];
   return (
     <main className="flex-1 bg-[#f8fcf9] pb-20">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-5 sm:py-14">
         <Link
           href={`/courses/${course.slug}`}
           className="text-sm font-semibold text-[#06ad7a] hover:underline"
@@ -51,12 +51,12 @@ export default function CoursePlayer({
               <p className="mt-3 leading-7 text-[#838894]">
                 تابع الدرس، ثم اختر الدرس التالي من قائمة المحتوى.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <button
                   type="button"
                   disabled={selected === 0}
                   onClick={() => setSelected(selected - 1)}
-                  className="rounded-full border border-[#e1e7e3] px-6 py-3 text-sm font-bold disabled:opacity-40"
+                  className="w-full rounded-full border border-[#e1e7e3] px-6 py-3 text-sm font-bold disabled:opacity-40 sm:w-auto"
                 >
                   الدرس السابق
                 </button>
@@ -64,7 +64,7 @@ export default function CoursePlayer({
                   type="button"
                   disabled={selected === lessons.length - 1}
                   onClick={() => setSelected(selected + 1)}
-                  className="rounded-full bg-[#06cc8f] px-6 py-3 text-sm font-bold text-white disabled:opacity-40"
+                  className="w-full rounded-full bg-[#06cc8f] px-6 py-3 text-sm font-bold text-white disabled:opacity-40 sm:w-auto"
                 >
                   الدرس التالي
                 </button>

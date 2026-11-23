@@ -35,7 +35,7 @@ export default async function CoursePage({ params }: Props) {
 
   return (
     <main className="flex-1 bg-[#f8fcf9] pb-20">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-5 sm:py-14">
         <nav
           aria-label="مسار الصفحة"
           className="mb-8 flex flex-wrap gap-2 text-sm text-[#838894]"
@@ -68,18 +68,20 @@ export default async function CoursePage({ params }: Props) {
                 {preview ? "درس مجاني" : "ضمن الاشتراك"}
               </span>
             </div>
-            <Link
-              href="/subscribe"
-              className="mt-8 inline-flex min-h-14 items-center justify-center rounded-full bg-[#06cc8f] px-9 text-sm font-bold text-white transition hover:bg-[#00b980]"
-            >
-              اشترك الآن
-            </Link>
-            <Link
-              href={`/courses/${course.slug}/watch`}
-              className="mr-5 inline-block text-sm font-semibold text-[#06ad7a] hover:underline"
-            >
-              مشترك بالفعل؟ شاهد الدورة
-            </Link>
+            <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
+              <Link
+                href="/subscribe"
+                className="inline-flex min-h-14 justify-center rounded-full bg-[#06cc8f] px-9 text-sm font-bold text-white transition hover:bg-[#00b980]"
+              >
+                اشترك الآن
+              </Link>
+              <Link
+                href={`/courses/${course.slug}/watch`}
+                className="text-center text-sm font-semibold text-[#06ad7a] hover:underline"
+              >
+                مشترك بالفعل؟ شاهد الدورة
+              </Link>
+            </div>
           </div>
           <div className="overflow-hidden rounded-[22px] border border-[#e2e9e4] bg-white shadow-[0_14px_45px_rgba(33,33,63,0.06)]">
             {previewPlayback ? (
@@ -114,7 +116,7 @@ export default async function CoursePage({ params }: Props) {
             {lessons.map((lesson, index) => (
               <div
                 key={lesson.id}
-                className="flex items-center gap-4 border-b border-[#edf0ee] px-5 py-5 last:border-0 sm:px-6"
+                className="flex items-center gap-3 border-b border-[#edf0ee] px-4 py-5 last:border-0 sm:gap-4 sm:px-6"
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e9faf2] text-sm font-bold text-[#06ad7a]">
                   {index + 1}

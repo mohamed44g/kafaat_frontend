@@ -170,7 +170,7 @@ export default function Profile() {
             </div>
             <nav
               aria-label="أقسام الملف الشخصي"
-              className="mt-4 flex gap-2 md:flex-col"
+              className="mt-4 flex gap-2 overflow-x-auto pb-1 md:flex-col md:overflow-visible"
             >
               {(
                 [
@@ -183,7 +183,7 @@ export default function Profile() {
                   type="button"
                   onClick={() => setActive(item.id)}
                   aria-pressed={active === item.id}
-                  className={`flex-1 rounded-xl px-4 py-3 text-right text-sm font-semibold transition ${active === item.id ? "bg-[#e7faf1] text-[#00a875]" : "text-[#717786] hover:bg-[#f7faf8]"}`}
+                  className={`min-w-[145px] flex-1 rounded-xl px-4 py-3 text-right text-sm font-semibold transition md:min-w-0 ${active === item.id ? "bg-[#e7faf1] text-[#00a875]" : "text-[#717786] hover:bg-[#f7faf8]"}`}
                 >
                   {item.label}
                 </button>
@@ -191,7 +191,7 @@ export default function Profile() {
               {profile && ["admin", "super_admin"].includes(profile.role) && (
                 <Link
                   href="/dashboard"
-                  className="flex-1 rounded-xl px-4 py-3 text-right text-sm font-semibold text-[#717786] transition hover:bg-[#f7faf8] hover:text-[#00a875]"
+                  className="min-w-[145px] flex-1 rounded-xl px-4 py-3 text-right text-sm font-semibold text-[#717786] transition hover:bg-[#f7faf8] hover:text-[#00a875] md:min-w-0"
                 >
                   لوحة الإدارة
                 </Link>
@@ -321,7 +321,8 @@ export default function Profile() {
                         <p className="mt-2 text-sm font-bold text-[#06ad7a]">
                           {Number(
                             subscription.subscription.plan.price,
-                          ).toLocaleString("ar-KW")} د.ك / شهريًا
+                          ).toLocaleString("ar-KW")}{" "}
+                          د.ك / شهريًا
                         </p>
                       )}
                     </div>
@@ -349,12 +350,19 @@ export default function Profile() {
                   </div>
                   {!!subscription?.subscription?.plan.features.length && (
                     <ul className="mt-6 space-y-2 border-t border-[#e5ece7] pt-5">
-                      {subscription.subscription.plan.features.map((feature) => (
-                        <li key={feature.id} className="text-sm text-[#65716b]">
-                          <span className="ml-2 font-bold text-[#06ad7a]">✓</span>
-                          {feature.label}
-                        </li>
-                      ))}
+                      {subscription.subscription.plan.features.map(
+                        (feature) => (
+                          <li
+                            key={feature.id}
+                            className="text-sm text-[#65716b]"
+                          >
+                            <span className="ml-2 font-bold text-[#06ad7a]">
+                              ✓
+                            </span>
+                            {feature.label}
+                          </li>
+                        ),
+                      )}
                     </ul>
                   )}
                 </div>

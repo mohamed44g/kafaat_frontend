@@ -42,7 +42,10 @@ interface JitsiOptions {
 
 declare global {
   interface Window {
-    JitsiMeetExternalAPI?: new (domain: string, options: JitsiOptions) => JitsiApi;
+    JitsiMeetExternalAPI?: new (
+      domain: string,
+      options: JitsiOptions,
+    ) => JitsiApi;
   }
 }
 
@@ -74,9 +77,9 @@ function loadJitsiScript(meetUrl: string): Promise<void> {
 
 export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<"loading" | "joining" | "joined" | "error">(
-    "loading",
-  );
+  const [state, setState] = useState<
+    "loading" | "joining" | "joined" | "error"
+  >("loading");
   const [error, setError] = useState("");
   const [requiresPremium, setRequiresPremium] = useState(false);
 
@@ -90,20 +93,23 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
           `/api/backend/live-sessions/${encodeURIComponent(sessionId)}/join`,
           { cache: "no-store" },
         );
-        const body = (await response.json().catch(() => null)) as
-          | ApiEnvelope<JoinConfig>
-          | null;
+        const body = (await response
+          .json()
+          .catch(() => null)) as ApiEnvelope<JoinConfig> | null;
         if (!response.ok || !body?.success) {
           setRequiresPremium(
             response.status === 402 ||
               body?.error?.code === "SUBSCRIPTION_REQUIRED",
           );
-          throw new Error(body?.error?.message || "تعذر تجهيز الجلسة المباشرة.");
+          throw new Error(
+            body?.error?.message || "تعذر تجهيز الجلسة المباشرة.",
+          );
         }
         if (disposed || !rootRef.current) return;
         setState("joining");
         await loadJitsiScript(body.data.meetUrl);
-        if (disposed || !rootRef.current || !window.JitsiMeetExternalAPI) return;
+        if (disposed || !rootRef.current || !window.JitsiMeetExternalAPI)
+          return;
         api = new window.JitsiMeetExternalAPI(body.data.domain, {
           roomName: body.data.roomName,
           width: "100%",
@@ -146,7 +152,7 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
   }, [sessionId]);
 
   return (
-    <main className="flex-1 bg-[#f5faf7] px-5 py-10">
+    <main className="flex-1 bg-[#f5faf7] px-4 py-6 sm:px-5 sm:py-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -163,7 +169,7 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
           </Link>
         </div>
 
-        <section className="relative min-h-[720px] overflow-hidden rounded-2xl border border-[#dfe7e2] bg-white shadow-sm">
+        <section className="relative min-h-[calc(100dvh-10rem)] overflow-hidden rounded-2xl border border-[#dfe7e2] bg-white shadow-sm sm:min-h-[620px] lg:min-h-[720px]">
           {state !== "joined" && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-white p-8 text-center">
               {state === "error" ? (
@@ -199,7 +205,11 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
               )}
             </div>
           )}
-          <div ref={rootRef} dir="ltr" className="min-h-[720px] w-full" />
+          <div
+            ref={rootRef}
+            dir="ltr"
+            className="min-h-[calc(100dvh-10rem)] w-full sm:min-h-[620px] lg:min-h-[720px]"
+          />
         </section>
       </div>
     </main>

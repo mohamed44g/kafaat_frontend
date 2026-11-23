@@ -21,12 +21,12 @@ export default async function Home({
   return (
     <>
       <main>
-        <section className="bg-gradient-to-b from-[#e9fff0] to-white px-5 pb-24 pt-20 text-center md:pb-32 md:pt-28">
+        <section className="bg-gradient-to-b from-[#e9fff0] to-white px-4 pb-20 pt-14 text-center sm:px-5 sm:pb-24 sm:pt-20 md:pb-32 md:pt-28">
           <div className="mx-auto max-w-3xl">
             <p className="mb-5 font-semibold text-[#00ae79]">
               مستقبلك يبدأ بمهارة
             </p>
-            <h1 className="text-4xl font-bold leading-[1.5] md:text-6xl md:leading-[1.5]">
+            <h1 className="text-3xl font-bold leading-[1.5] sm:text-4xl md:text-6xl md:leading-[1.5]">
               تعلم صنعة اليوم،
               <br />
               <span className="text-[#06c78a]">وافتح أبواب بكرة</span>
@@ -51,7 +51,7 @@ export default async function Home({
         <section
           id="about"
           aria-label="مميزات الأكاديمية"
-          className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 pb-24 text-center md:grid-cols-4"
+          className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-8 px-4 pb-20 text-center sm:gap-8 sm:px-5 md:grid-cols-4 md:pb-24"
         >
           {[
             ["تعلّم عملي", "خطوات واضحة وتطبيقية"],
@@ -105,7 +105,9 @@ export default async function Home({
                     <p className="text-3xl font-bold text-[#06ad7a]">
                       {Number(plan.price).toLocaleString("ar-KW")}
                     </p>
-                    <p className="mt-1 text-xs text-[#9295a3]">دينار كويتي / شهريًا</p>
+                    <p className="mt-1 text-xs text-[#9295a3]">
+                      دينار كويتي / شهريًا
+                    </p>
                   </div>
                 </div>
                 <p className="mt-5 rounded-xl bg-[#f7faf8] px-4 py-3 text-sm font-semibold">
