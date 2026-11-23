@@ -18,6 +18,11 @@ body {
   font-family: "IBM Plex Sans Arabic", sans-serif;
 }
 
+body:has(.dashboard-shell) > header,
+body:has(.dashboard-shell) > footer {
+  display: none;
+}
+
 button:not(:disabled),
 [role="button"]:not([aria-disabled="true"]) {
   cursor: pointer;

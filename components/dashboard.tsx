@@ -462,6 +462,7 @@ export default function Dashboard(props: DashboardProps) {
   const [section, setSection] = useState<Section>("overview");
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const rows = buildRows(props);
   const { courses, users } = props;
   const label =
@@ -480,41 +481,68 @@ export default function Dashboard(props: DashboardProps) {
     setDrawerOpen(false);
   }
   return (
-    <main className="flex-1 bg-[#f5f8f6]">
-      <div className="flex w-full flex-col lg:min-h-[800px] lg:flex-row">
-        <aside className="hidden w-full shrink-0 border-b border-[#e7eeea] bg-white p-4 sm:p-5 lg:block lg:w-60 lg:border-b-0 lg:border-l lg:px-4 lg:py-7">
-          <div className="mb-5 flex items-center gap-2 px-3 lg:mb-7">
+    <main className="dashboard-shell min-h-screen flex-1 bg-[#f5f8f6]">
+      <div className="flex min-h-screen w-full flex-col lg:flex-row">
+        <aside
+          className={`relative hidden w-full shrink-0 border-b border-[#e7eeea] bg-white p-4 transition-[width] duration-300 sm:p-5 lg:block lg:min-h-screen lg:border-b-0 lg:border-l lg:px-3 lg:py-7 ${sidebarOpen ? "lg:w-60" : "lg:w-20"}`}
+        >
+          <div
+            className={`mb-5 flex items-center gap-2 px-3 lg:mb-7 ${sidebarOpen ? "justify-start" : "justify-center px-0"}`}
+          >
             <Image
               src="/kafaat-logo.png"
               alt="كفاءات"
               width={1024}
               height={610}
-              className="h-10 w-auto"
+              className={`${sidebarOpen ? "h-10" : "h-8"} w-auto`}
             />
-            <span className="text-xs font-medium text-[#9ba69f]">
+            <span
+              className={`text-xs font-medium text-[#9ba69f] ${sidebarOpen ? "" : "hidden"}`}
+            >
               / الإدارة
             </span>
           </div>
+          <button
+            type="button"
+            onClick={() => setSidebarOpen((current) => !current)}
+            aria-label={
+              sidebarOpen ? "تصغير الشريط الجانبي" : "توسيع الشريط الجانبي"
+            }
+            title={sidebarOpen ? "تصغير القائمة" : "توسيع القائمة"}
+            className="absolute -left-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#dfe8e2] bg-white text-[#52625a] shadow-sm transition hover:bg-[#eaf9f1] hover:text-[#009d70] lg:flex"
+          >
+            <ChevronIcon expanded={sidebarOpen} />
+          </button>
           <nav
             aria-label="أقسام لوحة الإدارة"
             className="flex gap-6 overflow-x-auto lg:block"
           >
             {groups.map((group) => (
-              <div key={group.label} className="mb-5 min-w-max lg:min-w-0">
-                <p className="mb-2 px-3 text-[11px] font-semibold text-[#a6b0aa]">
+              <div
+                key={group.label}
+                className={`mb-5 min-w-max lg:min-w-0 ${sidebarOpen ? "" : "lg:flex lg:flex-col lg:items-center"}`}
+              >
+                <p
+                  className={`mb-2 px-3 text-[11px] font-semibold text-[#a6b0aa] ${sidebarOpen ? "" : "lg:sr-only"}`}
+                >
                   {group.label}
                 </p>
-                <div className="flex gap-1 lg:flex-col">
+                <div
+                  className={`flex gap-1 lg:flex-col ${sidebarOpen ? "" : "lg:items-center"}`}
+                >
                   {group.items.map((item) => (
                     <button
                       type="button"
                       key={item.id}
                       onClick={() => navigate(item.id)}
                       aria-current={section === item.id ? "page" : undefined}
-                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold transition ${section === item.id ? "bg-[#e8f9f0] text-[#00a875]" : "text-[#7e8982] hover:bg-[#f6faf7]"}`}
+                      title={item.label}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold transition ${sidebarOpen ? "w-full" : "lg:h-11 lg:w-11 lg:justify-center lg:px-0"} ${section === item.id ? "bg-[#e8f9f0] text-[#00a875]" : "text-[#7e8982] hover:bg-[#f6faf7]"}`}
                     >
                       <DashboardIcon name={item.id} />
-                      {item.label}
+                      <span className={sidebarOpen ? "" : "lg:sr-only"}>
+                        {item.label}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -523,7 +551,7 @@ export default function Dashboard(props: DashboardProps) {
           </nav>
         </aside>
         <div className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 lg:px-10">
-          <div className="mb-6 flex items-center justify-between lg:hidden">
+          <div className="mb-6 flex items-center justify-between rounded-2xl border border-[#e4ebe6] bg-white px-4 py-3 shadow-sm lg:hidden">
             <div className="flex items-center gap-2">
               <Image
                 src="/kafaat-logo.png"
@@ -745,6 +773,24 @@ function MenuIcon() {
       strokeLinecap="round"
     >
       <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ expanded }: { expanded: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d={expanded ? "m15 18-6-6 6-6" : "m9 18 6-6-6-6"} />
     </svg>
   );
 }
