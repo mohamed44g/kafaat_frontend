@@ -78,14 +78,24 @@ function loadJitsiScript(meetUrl: string): Promise<void> {
 export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<
-    "loading" | "joining" | "joined" | "error"
+    "loading" | "joining" | "joined" | "ended" | "error"
   >("loading");
   const [error, setError] = useState("");
   const [requiresPremium, setRequiresPremium] = useState(false);
 
   useEffect(() => {
     let disposed = false;
+    let meetingEnded = false;
     let api: JitsiApi | null = null;
+
+    function finishMeeting() {
+      if (disposed || meetingEnded) return;
+      meetingEnded = true;
+      const activeApi = api;
+      api = null;
+      activeApi?.dispose();
+      setState("ended");
+    }
 
     async function join() {
       try {
@@ -120,8 +130,14 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
           userInfo: body.data.userInfo,
           configOverwrite: {
             prejoinConfig: { enabled: false },
+            disableInviteFunctions: true,
             startWithAudioMuted: true,
             startWithVideoMuted: true,
+            p2p: {
+              enabled: true,
+              iceTransportPolicy: "all",
+              backToP2PDelay: 5,
+            },
             toolbarButtons: [
               "microphone",
               "camera",
@@ -155,6 +171,8 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
         api.addEventListener("videoConferenceJoined", () => {
           if (!disposed) setState("joined");
         });
+        api.addEventListener("videoConferenceLeft", finishMeeting);
+        api.addEventListener("readyToClose", finishMeeting);
         if (!disposed) setState("joined");
       } catch (caught) {
         if (!disposed) {
@@ -196,7 +214,25 @@ export default function JitsiMeeting({ sessionId }: { sessionId: string }) {
         <section className="relative min-h-[calc(100dvh-10rem)] overflow-hidden rounded-2xl border border-[#dfe7e2] bg-white shadow-sm sm:min-h-[620px] lg:min-h-[720px]">
           {state !== "joined" && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-white p-8 text-center">
-              {state === "error" ? (
+              {state === "ended" ? (
+                <div className="max-w-lg">
+                  <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f8f1] text-3xl font-bold text-[#00a875]">
+                    ✓
+                  </span>
+                  <h2 className="mt-5 text-2xl font-bold text-[#17213d]">
+                    انتهى الاجتماع
+                  </h2>
+                  <p className="mt-3 leading-7 text-[#76817c]">
+                    تم إغلاق قاعة الجلسة بنجاح.
+                  </p>
+                  <Link
+                    href="/live-sessions"
+                    className="mt-6 inline-flex rounded-full bg-[#06cc8f] px-8 py-3 font-bold text-white transition hover:bg-[#05b981]"
+                  >
+                    العودة إلى الجلسات
+                  </Link>
+                </div>
+              ) : state === "error" ? (
                 <div className="max-w-lg">
                   <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-2xl text-red-600">
                     !
