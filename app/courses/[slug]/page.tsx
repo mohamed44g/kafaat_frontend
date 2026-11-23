@@ -71,7 +71,7 @@ export default async function CoursePage({ params }: Props) {
             <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
               <Link
                 href="/subscribe"
-                className="inline-flex min-h-14 justify-center rounded-full bg-[#06cc8f] px-9 text-sm font-bold text-white transition hover:bg-[#00b980]"
+                className="inline-flex min-h-14 items-center justify-center rounded-full bg-[#06cc8f] px-9 text-sm font-bold text-white transition hover:bg-[#00b980]"
               >
                 اشترك الآن
               </Link>

@@ -461,6 +461,7 @@ function Overview({
 export default function Dashboard(props: DashboardProps) {
   const [section, setSection] = useState<Section>("overview");
   const [search, setSearch] = useState("");
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const rows = buildRows(props);
   const { courses, users } = props;
   const label =
@@ -476,11 +477,12 @@ export default function Dashboard(props: DashboardProps) {
   function navigate(id: Section) {
     setSection(id);
     setSearch("");
+    setDrawerOpen(false);
   }
   return (
     <main className="flex-1 bg-[#f5f8f6]">
       <div className="flex w-full flex-col lg:min-h-[800px] lg:flex-row">
-        <aside className="w-full shrink-0 border-b border-[#e7eeea] bg-white p-4 sm:p-5 lg:w-60 lg:border-b-0 lg:border-l lg:px-4 lg:py-7">
+        <aside className="hidden w-full shrink-0 border-b border-[#e7eeea] bg-white p-4 sm:p-5 lg:block lg:w-60 lg:border-b-0 lg:border-l lg:px-4 lg:py-7">
           <div className="mb-5 flex items-center gap-2 px-3 lg:mb-7">
             <Image
               src="/kafaat-logo.png"
@@ -521,6 +523,29 @@ export default function Dashboard(props: DashboardProps) {
           </nav>
         </aside>
         <div className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 lg:px-10">
+          <div className="mb-6 flex items-center justify-between lg:hidden">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/kafaat-logo.png"
+                alt="كفاءات"
+                width={1024}
+                height={610}
+                className="h-11 w-auto"
+              />
+              <span className="text-xs font-medium text-[#9ba69f]">
+                / الإدارة
+              </span>
+            </div>
+            <button
+              type="button"
+              aria-label="فتح قائمة الإدارة"
+              aria-expanded={drawerOpen}
+              onClick={() => setDrawerOpen(true)}
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#dfe8e2] bg-white text-[#20263a]"
+            >
+              <MenuIcon />
+            </button>
+          </div>
           <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-xs text-[#9aa49e]">لوحة الإدارة / {label}</p>
@@ -638,7 +663,88 @@ export default function Dashboard(props: DashboardProps) {
             </section>
           )}
         </div>
+        {drawerOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <button
+              type="button"
+              aria-label="إغلاق قائمة الإدارة"
+              onClick={() => setDrawerOpen(false)}
+              className="absolute inset-0 bg-[#17213d]/45"
+            />
+            <aside
+              role="dialog"
+              aria-modal="true"
+              aria-label="قائمة الإدارة"
+              className="absolute inset-y-0 right-0 w-[min(20rem,88vw)] overflow-y-auto bg-white p-5 shadow-2xl"
+            >
+              <div className="mb-6 flex items-center justify-between border-b border-[#edf0ee] pb-5">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/kafaat-logo.png"
+                    alt="كفاءات"
+                    width={1024}
+                    height={610}
+                    className="h-12 w-auto"
+                  />
+                  <span className="text-xs font-medium text-[#9ba69f]">
+                    / الإدارة
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  aria-label="إغلاق قائمة الإدارة"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f2f7f4] text-xl text-[#20263a]"
+                >
+                  ×
+                </button>
+              </div>
+              <nav aria-label="أقسام لوحة الإدارة">
+                {groups.map((group) => (
+                  <div key={group.label} className="mb-5">
+                    <p className="mb-2 px-3 text-[11px] font-semibold text-[#a6b0aa]">
+                      {group.label}
+                    </p>
+                    <div className="grid gap-1">
+                      {group.items.map((item) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          onClick={() => navigate(item.id)}
+                          aria-current={
+                            section === item.id ? "page" : undefined
+                          }
+                          className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-right text-sm font-semibold transition ${section === item.id ? "bg-[#e8f9f0] text-[#00a875]" : "text-[#7e8982] hover:bg-[#f6faf7]"}`}
+                        >
+                          <DashboardIcon name={item.id} />
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </nav>
+            </aside>
+          </div>
+        )}
       </div>
     </main>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    >
+      <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
   );
 }

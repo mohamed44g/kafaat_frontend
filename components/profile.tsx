@@ -123,8 +123,8 @@ export default function Profile() {
       : "—";
 
   return (
-    <main className="flex-1 bg-[#f8fcf9] px-5 py-10 sm:py-14">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-w-0 flex-1 overflow-x-hidden bg-[#f8fcf9] px-4 py-8 sm:px-5 sm:py-14">
+      <div className="mx-auto w-full max-w-6xl">
         <div className="mb-9">
           <Link
             href="/"
@@ -170,7 +170,7 @@ export default function Profile() {
             </div>
             <nav
               aria-label="أقسام الملف الشخصي"
-              className="mt-4 flex gap-2 overflow-x-auto pb-1 md:flex-col md:overflow-visible"
+              className="mt-4 grid grid-cols-2 gap-2 md:flex md:flex-col"
             >
               {(
                 [
@@ -183,7 +183,7 @@ export default function Profile() {
                   type="button"
                   onClick={() => setActive(item.id)}
                   aria-pressed={active === item.id}
-                  className={`min-w-[145px] flex-1 rounded-xl px-4 py-3 text-right text-sm font-semibold transition md:min-w-0 ${active === item.id ? "bg-[#e7faf1] text-[#00a875]" : "text-[#717786] hover:bg-[#f7faf8]"}`}
+                  className={`min-w-0 rounded-xl px-3 py-3 text-center text-sm font-semibold transition md:px-4 md:text-right ${active === item.id ? "bg-[#e7faf1] text-[#00a875]" : "text-[#717786] hover:bg-[#f7faf8]"}`}
                 >
                   {item.label}
                 </button>
@@ -191,7 +191,7 @@ export default function Profile() {
               {profile && ["admin", "super_admin"].includes(profile.role) && (
                 <Link
                   href="/dashboard"
-                  className="min-w-[145px] flex-1 rounded-xl px-4 py-3 text-right text-sm font-semibold text-[#717786] transition hover:bg-[#f7faf8] hover:text-[#00a875] md:min-w-0"
+                  className="col-span-2 min-w-0 rounded-xl px-3 py-3 text-center text-sm font-semibold text-[#717786] transition hover:bg-[#f7faf8] hover:text-[#00a875] md:px-4 md:text-right"
                 >
                   لوحة الإدارة
                 </Link>
