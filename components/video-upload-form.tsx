@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import * as tus from "tus-js-client";
 import type { Course } from "../lib/api";
+import { secureFetch } from "../lib/client-fetch";
 
 interface UploadSession {
   video: { id: string };
@@ -38,7 +39,7 @@ export default function VideoUploadForm({
     setUploading(true);
     try {
       const courseId = String(form.get("courseId"));
-      const response = await fetch(
+      const response = await secureFetch(
         `/api/backend/admin/courses/${courseId}/videos/upload-session`,
         {
           method: "POST",
@@ -79,7 +80,7 @@ export default function VideoUploadForm({
         });
         upload.start();
       });
-      const syncResponse = await fetch(
+      const syncResponse = await secureFetch(
         `/api/backend/admin/videos/${session.video.id}/sync`,
         { method: "POST" },
       );

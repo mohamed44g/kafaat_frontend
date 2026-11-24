@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { secureFetch } from "../lib/client-fetch";
 
 interface ProfileData {
   name: string;
@@ -91,7 +92,7 @@ export default function Profile() {
     const form = new FormData(event.currentTarget);
     const countryCode = String(form.get("countryCode") ?? "");
     const phone = String(form.get("phone") ?? "").replace(/\D/g, "");
-    const response = await fetch("/api/backend/users/me", {
+    const response = await secureFetch("/api/backend/users/me", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

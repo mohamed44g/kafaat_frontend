@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { LiveSession } from "../lib/api";
+import { secureFetch } from "../lib/client-fetch";
 
 interface ApiEnvelope<T> {
   success: boolean;
@@ -38,11 +39,13 @@ function toLocalDateTime(value: string): string {
 }
 
 async function request<T>(path: string, init: RequestInit): Promise<T> {
-  const response = await fetch(path, {
+  const response = await secureFetch(path, {
     ...init,
     headers: { "Content-Type": "application/json", ...init.headers },
   });
-  const body = (await response.json().catch(() => null)) as ApiEnvelope<T> | null;
+  const body = (await response
+    .json()
+    .catch(() => null)) as ApiEnvelope<T> | null;
   if (!response.ok || !body?.success)
     throw new Error(body?.error?.message || "تعذر تنفيذ العملية.");
   return body.data;
@@ -86,7 +89,9 @@ export default function LiveSessionManagement({
       );
       setForm(emptyForm);
       setEditingId(null);
-      setMessage(editingId ? "تم تحديث الجلسة." : "تم إنشاء جلسة مباشرة بنجاح.");
+      setMessage(
+        editingId ? "تم تحديث الجلسة." : "تم إنشاء جلسة مباشرة بنجاح.",
+      );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "حدث خطأ غير متوقع.");
     } finally {
@@ -110,9 +115,12 @@ export default function LiveSessionManagement({
     setBusy(true);
     setMessage("");
     try {
-      await request<{ deleted: true }>(`/api/backend/admin/live-sessions/${id}`, {
-        method: "DELETE",
-      });
+      await request<{ deleted: true }>(
+        `/api/backend/admin/live-sessions/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
       setSessions((current) => current.filter((item) => item.id !== id));
       if (editingId === id) {
         setEditingId(null);
@@ -136,7 +144,9 @@ export default function LiveSessionManagement({
             minLength={2}
             maxLength={180}
             value={form.title}
-            onChange={(event) => setForm({ ...form, title: event.target.value })}
+            onChange={(event) =>
+              setForm({ ...form, title: event.target.value })
+            }
             className="mt-2 w-full rounded-xl border border-[#dfe7e2] px-4 py-3 outline-none focus:border-[#06cc8f]"
           />
         </label>
@@ -146,7 +156,9 @@ export default function LiveSessionManagement({
             required
             type="datetime-local"
             value={form.startsAt}
-            onChange={(event) => setForm({ ...form, startsAt: event.target.value })}
+            onChange={(event) =>
+              setForm({ ...form, startsAt: event.target.value })
+            }
             className="mt-2 w-full rounded-xl border border-[#dfe7e2] px-4 py-3 outline-none focus:border-[#06cc8f]"
           />
         </label>
@@ -181,7 +193,11 @@ export default function LiveSessionManagement({
             disabled={busy}
             className="rounded-xl bg-[#06cc8f] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
           >
-            {busy ? "جارٍ الحفظ..." : editingId ? "حفظ التعديلات" : "إنشاء جلسة مباشرة"}
+            {busy
+              ? "جارٍ الحفظ..."
+              : editingId
+                ? "حفظ التعديلات"
+                : "إنشاء جلسة مباشرة"}
           </button>
           {editingId && (
             <button
@@ -213,7 +229,9 @@ export default function LiveSessionManagement({
           <tbody>
             {sessions.map((session) => (
               <tr key={session.id} className="border-t border-[#edf0ee]">
-                <td className="px-5 py-4 font-bold text-[#252b3d]">{session.title}</td>
+                <td className="px-5 py-4 font-bold text-[#252b3d]">
+                  {session.title}
+                </td>
                 <td className="px-5 py-4 text-[#657069]">
                   {new Intl.DateTimeFormat("ar-KW", {
                     dateStyle: "medium",
@@ -264,7 +282,10 @@ export default function LiveSessionManagement({
             ))}
             {!sessions.length && (
               <tr>
-                <td colSpan={5} className="px-5 py-10 text-center text-[#8a9690]">
+                <td
+                  colSpan={5}
+                  className="px-5 py-10 text-center text-[#8a9690]"
+                >
                   لم تُضف جلسات مباشرة بعد.
                 </td>
               </tr>

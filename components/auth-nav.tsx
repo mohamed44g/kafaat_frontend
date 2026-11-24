@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { secureFetch } from "../lib/client-fetch";
 
 export default function AuthNav({ signedIn }: { signedIn: boolean }) {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function AuthNav({ signedIn }: { signedIn: boolean }) {
       <button
         type="button"
         onClick={async () => {
-          await fetch("/api/auth/logout", { method: "POST" });
+          await secureFetch("/api/auth/logout", { method: "POST" });
           router.push("/");
           router.refresh();
         }}

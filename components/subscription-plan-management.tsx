@@ -3,13 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 import type { SubscriptionPlan } from "../lib/api";
+import { secureFetch } from "../lib/client-fetch";
 
 async function apiRequest(
   path: string,
   method: "POST" | "PATCH" | "DELETE",
   body?: unknown,
 ) {
-  const response = await fetch(`/api/backend/${path}`, {
+  const response = await secureFetch(`/api/backend/${path}`, {
     method,
     headers: body ? { "Content-Type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
@@ -73,7 +74,9 @@ export default function SubscriptionPlanManagement({
   }
 
   function removePlan(id: string) {
-    if (!window.confirm("هل تريد حذف الباقة؟ لا يمكن حذف باقة مرتبطة باشتراكات."))
+    if (
+      !window.confirm("هل تريد حذف الباقة؟ لا يمكن حذف باقة مرتبطة باشتراكات.")
+    )
       return;
     run(async () => {
       await apiRequest(`admin/plans/${id}`, "DELETE");
@@ -83,10 +86,7 @@ export default function SubscriptionPlanManagement({
 
   function removeFeature(planId: string, featureId: string) {
     run(async () => {
-      await apiRequest(
-        `admin/plans/${planId}/features/${featureId}`,
-        "DELETE",
-      );
+      await apiRequest(`admin/plans/${planId}/features/${featureId}`, "DELETE");
       setMessage("تم حذف الميزة.");
     });
   }

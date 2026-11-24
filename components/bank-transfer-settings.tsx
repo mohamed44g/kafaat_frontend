@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 import type { BankTransferSettings } from "../lib/api";
+import { secureFetch } from "../lib/client-fetch";
 
 const fieldClass =
   "rounded-xl border border-[#dfe8e2] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#06cc8f]";
@@ -21,22 +22,17 @@ export default function BankTransferSettingsForm({
     const form = new FormData(event.currentTarget);
     setMessage("");
     startTransition(async () => {
-      const response = await fetch("/api/backend/admin/bank-transfer", {
+      const response = await secureFetch("/api/backend/admin/bank-transfer", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bankName: String(form.get("bankName") ?? "").trim(),
-          accountHolderName: String(
-            form.get("accountHolderName") ?? "",
-          ).trim(),
+          accountHolderName: String(form.get("accountHolderName") ?? "").trim(),
           iban: String(form.get("iban") ?? "").trim(),
           accountNumber:
             String(form.get("accountNumber") ?? "").trim() || undefined,
-          swiftCode:
-            String(form.get("swiftCode") ?? "").trim() || undefined,
-          supportWhatsapp: String(
-            form.get("supportWhatsapp") ?? "",
-          ).trim(),
+          swiftCode: String(form.get("swiftCode") ?? "").trim() || undefined,
+          supportWhatsapp: String(form.get("supportWhatsapp") ?? "").trim(),
           instructions: String(form.get("instructions") ?? "").trim(),
           isActive: form.get("isActive") === "on",
         }),
@@ -54,10 +50,7 @@ export default function BankTransferSettingsForm({
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="grid gap-4 p-6 sm:grid-cols-2"
-    >
+    <form onSubmit={submit} className="grid gap-4 p-6 sm:grid-cols-2">
       <label className="grid gap-1 text-sm font-semibold">
         اسم البنك
         <input

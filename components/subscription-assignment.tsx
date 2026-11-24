@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 import type { SubscriptionPlan } from "../lib/api";
+import { secureFetch } from "../lib/client-fetch";
 
 interface UserOption {
   id: string;
@@ -27,7 +28,7 @@ export default function SubscriptionAssignment({
     const form = new FormData(formElement);
     setMessage("");
     startTransition(async () => {
-      const response = await fetch("/api/backend/subscriptions/admin", {
+      const response = await secureFetch("/api/backend/subscriptions/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -79,7 +80,8 @@ export default function SubscriptionAssignment({
           .filter((plan) => plan.isActive)
           .map((plan) => (
             <option key={plan.id} value={plan.id}>
-              {plan.name} — {Number(plan.price).toLocaleString("ar-KW")} د.ك / شهريًا
+              {plan.name} — {Number(plan.price).toLocaleString("ar-KW")} د.ك /
+              شهريًا
             </option>
           ))}
       </select>

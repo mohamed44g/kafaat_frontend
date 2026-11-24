@@ -2,8 +2,13 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { backendUrl } from "../../../../lib/api";
 import { SESSION_COOKIE } from "../../../../lib/session";
+import { rejectInvalidCsrf } from "../../../../lib/request-security";
 
 async function proxy(request: NextRequest, path: string[]) {
+  if (!["GET", "HEAD", "OPTIONS"].includes(request.method)) {
+    const csrfError = rejectInvalidCsrf(request);
+    if (csrfError) return csrfError;
+  }
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token)
     return NextResponse.json(
