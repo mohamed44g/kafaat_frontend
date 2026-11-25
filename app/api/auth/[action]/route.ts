@@ -9,11 +9,6 @@ interface AuthSession {
   accessToken?: string;
   expiresIn?: number;
   user?: { id: string; name: string; email: string; role: string };
-  mfaRequired?: boolean;
-  mfaSetupRequired?: boolean;
-  challengeToken?: string;
-  setupSecret?: string;
-  otpauthUri?: string;
 }
 
 export async function POST(
@@ -23,12 +18,11 @@ export async function POST(
   const originError = rejectUntrustedOrigin(request);
   if (originError) return originError;
   const { action } = await params;
-  if (action !== "login" && action !== "register" && action !== "mfa-verify")
+  if (action !== "login" && action !== "register")
     return NextResponse.json({ message: "Not found" }, { status: 404 });
   try {
     const payload = (await request.json()) as Record<string, unknown>;
-    const backendAction = action === "mfa-verify" ? "mfa/verify" : action;
-    const session = await apiFetch<AuthSession>(`/auth/${backendAction}`, {
+    const session = await apiFetch<AuthSession>(`/auth/${action}`, {
       method: "POST",
       body: JSON.stringify(payload),
     });
