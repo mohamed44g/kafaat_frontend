@@ -22,14 +22,15 @@ async function proxy(request: NextRequest, path: string[]) {
     target.searchParams.append(key, value),
   );
   const hasBody = !["GET", "HEAD"].includes(request.method);
+  const contentType = request.headers.get("content-type");
   const response = await fetch(target, {
     method: request.method,
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
-      ...(hasBody ? { "Content-Type": "application/json" } : {}),
+      ...(hasBody && contentType ? { "Content-Type": contentType } : {}),
     },
-    body: hasBody ? await request.text() : undefined,
+    body: hasBody ? Buffer.from(await request.arrayBuffer()) : undefined,
     cache: "no-store",
   });
   const body = await response.text();

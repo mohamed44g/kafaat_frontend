@@ -40,6 +40,36 @@ async function request(
     throw new Error(payload?.error?.message ?? "تعذرت العملية. حاول مرة أخرى.");
 }
 
+async function uploadCourseImage(file: File) {
+  if (file.size > 5 * 1024 * 1024)
+    throw new Error("حجم الصورة يجب ألا يتجاوز 5 ميجابايت.");
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
+    throw new Error("اختر صورة بصيغة JPEG أو PNG أو WebP.");
+  const form = new FormData();
+  form.set("image", file);
+  const response = await secureFetch("/api/backend/admin/course-images", {
+    method: "POST",
+    body: form,
+  });
+  const payload = (await response.json().catch(() => null)) as {
+    data?: { url?: string };
+    error?: { message?: string };
+  } | null;
+  const url = payload?.data?.url;
+  if (!response.ok || !url)
+    throw new Error(payload?.error?.message ?? "تعذر رفع صورة الدورة.");
+  return url;
+}
+
+async function removeUnusedCourseImage(url: string) {
+  const filename = url.split("/").at(-1);
+  if (!filename) return;
+  await secureFetch(
+    `/api/backend/admin/course-images/${encodeURIComponent(filename)}`,
+    { method: "DELETE" },
+  ).catch(() => undefined);
+}
+
 export default function ContentCrud({
   resource,
   categories,
@@ -67,19 +97,29 @@ export default function ContentCrud({
 
   function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const base = `admin/${resource}`;
     const id = editing?.id;
-    const body = buildPayload(resource, form);
+    const body = buildPayload(resource, form) as Record<string, unknown>;
     setMessage("");
     startTransition(async () => {
+      let uploadedImageUrl: string | undefined;
       try {
+        if (resource === "courses") {
+          const image = form.get("thumbnail");
+          if (image instanceof File && image.size > 0) {
+            uploadedImageUrl = await uploadCourseImage(image);
+            body.thumbnailUrl = uploadedImageUrl;
+          }
+        }
         await request(id ? `${base}/${id}` : base, id ? "PATCH" : "POST", body);
         setEditing(null);
-        event.currentTarget.reset();
+        formElement.reset();
         setMessage(`تم حفظ ${labels[resource]} بنجاح.`);
         router.refresh();
       } catch (error) {
+        if (uploadedImageUrl) await removeUnusedCourseImage(uploadedImageUrl);
         setMessage(error instanceof Error ? error.message : "تعذرت العملية.");
       }
     });
@@ -263,12 +303,7 @@ function Editor({
             required
             pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
           />
-          <Field
-            name="thumbnailUrl"
-            label="رابط الصورة (اختياري)"
-            defaultValue={course?.thumbnailUrl ?? ""}
-            type="url"
-          />
+          <CourseImageField currentUrl={course?.thumbnailUrl} />
           <Select
             name="categoryId"
             label="القسم"
@@ -522,6 +557,33 @@ function Check({
     </label>
   );
 }
+
+function CourseImageField({ currentUrl }: { currentUrl?: string | null }) {
+  return (
+    <label className="grid gap-2 text-sm font-semibold sm:col-span-2">
+      صورة غلاف الدورة
+      {currentUrl && (
+        <span
+          role="img"
+          aria-label="صورة الغلاف الحالية"
+          className="block aspect-video w-full max-w-72 rounded-xl border border-[#dfe8e2] bg-cover bg-center"
+          style={{ backgroundImage: `url(${JSON.stringify(currentUrl)})` }}
+        />
+      )}
+      <input
+        name="thumbnail"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        required={!currentUrl}
+        className="cursor-pointer rounded-xl border border-dashed border-[#b9cdc1] bg-white px-3 py-3 font-normal file:ml-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-[#e6f8f1] file:px-4 file:py-2 file:font-semibold file:text-[#008d65]"
+      />
+      <span className="font-normal text-[#7b8581]">
+        JPEG أو PNG أو WebP بحد أقصى 5 ميجابايت. عند التعديل اتركه فارغًا
+        للاحتفاظ بالصورة الحالية.
+      </span>
+    </label>
+  );
+}
 function buildPayload(resource: Resource, form: FormData) {
   const text = (name: string) => String(form.get(name) ?? "").trim();
   if (resource === "categories") return { title: text("title") };
@@ -536,7 +598,6 @@ function buildPayload(resource: Resource, form: FormData) {
       title: text("title"),
       slug: text("slug"),
       description: text("description"),
-      thumbnailUrl: text("thumbnailUrl") || undefined,
       categoryId: text("categoryId"),
       instructorId: text("instructorId"),
       isPublished: form.get("isPublished") === "on",
